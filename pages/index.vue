@@ -3,25 +3,15 @@
     <div>
       <Logo />
       <h1 class="title">
-        lobby-system
+        everything's wired up
       </h1>
       <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+        <!-- <NuxtLink to="/new-page">go to the new page</NuxtLink> -->
+        <ul>
+          <li><NuxtLink to="/home">home</NuxtLink></li>
+          <li><NuxtLink to="/joining">joining</NuxtLink></li>
+          <li><NuxtLink to="/room">room</NuxtLink></li>
+        </ul>
       </div>
     </div>
   </div>
