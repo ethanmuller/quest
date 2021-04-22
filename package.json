@@ -1,5 +1,5 @@
 {
-  "name": "lobby-system",
+  "name": "party",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -11,7 +11,10 @@
   "dependencies": {
     "core-js": "^3.9.1",
     "express": "^4.17.1",
-    "nuxt": "^2.15.3"
-  },
-  "devDependencies": {}
+    "nuxt": "^2.15.3",
+    "nuxt-socket-io": "^1.1.17",
+    "socket.io": "^4.0.1",
+    "socket.io-client": "^4.0.1",
+    "vue-socket.io": "^3.0.10"
+  }
 }

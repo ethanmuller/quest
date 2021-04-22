@@ -39,6 +39,7 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    // '~/io',
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
