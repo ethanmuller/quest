@@ -1,6 +1,13 @@
+import 'dotenv'
+
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
+
+  server: {
+    // host: '0.0.0.0',
+    // port: 8000,
+  },
 
   serverMiddleware: [
     { path: "/api",  handler: '~/api/eggs.js', },
@@ -43,7 +50,7 @@ export default {
   ],
 
   env: {
-    WS_URL: process.env.WS_URL || 'http://localhost:3000'
+    WS_URL: process.env.WS_URL
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
