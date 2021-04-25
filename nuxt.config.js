@@ -3,7 +3,7 @@ export default {
   ssr: false,
 
   serverMiddleware: [
-    '~/api/index.js',
+    { path: "/api",  handler: '~/api/eggs.js', },
   ],
 
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -39,8 +39,12 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // '~/io',
+    '~/io',
   ],
+
+  env: {
+    WS_URL: process.env.WS_URL || 'http://localhost:3000'
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

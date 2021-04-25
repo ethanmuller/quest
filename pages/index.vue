@@ -11,6 +11,7 @@
           <li><NuxtLink to="/home">home</NuxtLink></li>
           <li><NuxtLink to="/joining">joining</NuxtLink></li>
           <li><NuxtLink to="/room">room</NuxtLink></li>
+          <li><NuxtLink to="/chat">chat</NuxtLink></li>
         </ul>
       </div>
     </div>
