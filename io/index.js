@@ -7,7 +7,7 @@ export default function () {
     const io = socketIO(server)
 
     // overwrite nuxt.server.listen()
-    this.nuxt.server.listen = (port, host) => new Promise(resolve => server.listen(port || 3000, host || 'localhost', resolve))
+    this.nuxt.server.listen = (port, host) => new Promise(resolve => server.listen(this.nuxt.options.server.port, this.nuxt.options.server.host, resolve))
     // close this server on 'close' event
     this.nuxt.hook('close', () => new Promise(server.close))
 
