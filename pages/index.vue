@@ -12,6 +12,7 @@
           <li><NuxtLink to="/joining">joining</NuxtLink></li>
           <li><NuxtLink to="/room">room</NuxtLink></li>
           <li><NuxtLink to="/chat">chat</NuxtLink></li>
+          <li><NuxtLink to="/dpad">dpad</NuxtLink></li>
         </ul>
       </div>
     </div>
