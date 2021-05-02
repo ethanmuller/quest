@@ -52,6 +52,8 @@ export default {
     WS_URL: process.env.WS_URL
   },
 
+  watch: ['~/io/index.js'],
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     extend(config, { isDev, isClient }) {
