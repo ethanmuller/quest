@@ -1,5 +1,5 @@
 <template>
-  <button @dpadPress="dpadPress" @dpadRelease="dpadRelease" v-dpad id="dpad">
+  <button ref="dpad" id="dpad">
     <span class="y"></span>
     <span class="x"></span>
   </button>
@@ -411,15 +411,57 @@ export default {
       releaseSound,
     }
   },
+
+  mounted() {
+
+    this.$refs.dpad.addEventListener('touchstart', this.dpadPress)
+    this.$refs.dpad.addEventListener('mousedown', this.dpadPress)
+    this.$refs.dpad.addEventListener('touchend', this.dpadRelease)
+    this.$refs.dpad.addEventListener('mouseup', this.dpadRelease)
+  },
   
   methods: {
     dpadPress(e) {
+      e.preventDefault();
+
+      const rect = e.target.getBoundingClientRect()
+      const elCenterPos = [rect.left + rect.width/2, rect.top + rect.height/2]
+      let point;
+      let dir;
+
+      if (e.type === 'touchstart') {
+        point = [e.touches[e.touches.length - 1].clientX, e.touches[e.touches.length - 1].clientY]
+      } else if (e.type === 'mousedown') {
+        point = [e.clientX, e.clientY]
+      }
+
+      let p = [point[0] - elCenterPos[0], point[1] - elCenterPos[1]]
+
+      if (Math.abs(p[0]) > Math.abs(p[1])) {
+        if (p[0] > 0) {
+          this.$refs.dpad.classList.add('right')
+          dir = [1, 0]
+        } else {
+          this.$refs.dpad.classList.add('left')
+          dir = [-1, 0]
+        }
+      } else {
+        if (p[1] > 0) {
+          this.$refs.dpad.classList.add('down')
+          dir = [0, 1]
+        } else {
+          this.$refs.dpad.classList.add('up')
+          dir = [0, -1]
+        }
+      }
+      
       this.pressSound()
-      this.$emit('dpadPress', e)
+      this.$emit('dpadPress', dir)
     },
     dpadRelease(e) {
       this.releaseSound()
-      this.$emit('dpadRelease', e)
+      this.$refs.dpad.classList.remove('active', 'up', 'down', 'left', 'right')
+      this.$emit('dpadRelease')
     },
   }
 }

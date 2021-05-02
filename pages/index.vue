@@ -103,11 +103,11 @@ export default {
     btnRelease(e) {
     },
     
-    dpadPress(e) {
-      this.move(e.dir)
+    dpadPress(dir) {
+      this.move(dir)
     },
 
-    dpadRelease(e) {
+    dpadRelease() {
     },
     
     move(dir) {
