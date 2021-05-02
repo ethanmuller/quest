@@ -52,7 +52,6 @@ export default function () {
         console.log('somebody just joined!')
 
         getPartyList((party) => {
-          console.log(party)
           fn(party)
         })
       })
@@ -71,9 +70,7 @@ export default function () {
         locations[socket.id] = location
 
         getPartyList((party) => {
-          console.log(party)
-          fn(party)
-            socket.broadcast.emit('party-update', party)
+          socket.broadcast.emit('party-update', party)
         })
       })
     })
