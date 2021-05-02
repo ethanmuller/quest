@@ -21,6 +21,42 @@ export default function () {
     // Add socket.io events
     const messages = []
     io.on('connection', (socket) => {
+
+      // io.fetchSockets()
+      //   .then((sox) => {
+      //     const party = []
+      //     sox.forEach((p) => party.push({id: p.id, location: locations[p.id] || [0, 0]}))
+      //     socket.broadcast.emit('party-update', party)
+      //   })
+
+      function getPartyList(fn) {
+        io.fetchSockets()
+          .then((sox) => {
+            const party = []
+            sox.forEach((p) => {
+              const member = {
+                id: p.id,
+                location: locations[p.id] || [0, 0]
+              }
+
+              party.push(member)
+            })
+
+            fn(party)
+
+            // socket.broadcast.emit('party-update', party)
+          })
+      }
+      
+      socket.on('join', function (fn) {
+        console.log('somebody just joined!')
+
+        getPartyList((party) => {
+          console.log(party)
+          fn(party)
+        })
+      })
+
       socket.on('last-messages', function (fn) {
         fn(messages.slice(-50))
       })
@@ -34,12 +70,11 @@ export default function () {
         // socket.broadcast.emit('new-message', message)
         locations[socket.id] = location
 
-        io.fetchSockets()
-          .then((sox) => {
-            const party = []
-            sox.forEach((p) => party.push({id: p.id, location: locations[p.id] || [0, 0]}))
+        getPartyList((party) => {
+          console.log(party)
+          fn(party)
             socket.broadcast.emit('party-update', party)
-          })
+        })
       })
     })
   })

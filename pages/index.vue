@@ -27,7 +27,7 @@ const tileHeight = canvasSize / numTilesH;
 export default {
   asyncData () {
     return new Promise(resolve =>
-      socket.emit('last-messages', messages => resolve({ messages }))
+      socket.emit('join', data => resolve({ party: data }))
     )
   },
   data () {
