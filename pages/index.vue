@@ -19,11 +19,20 @@
 import socket from '~/plugins/socket.io.js'
 
 export default {
+  asyncData () {
+    return new Promise(resolve =>
+      socket.emit('last-messages', messages => resolve({ messages }))
+    )
+  },
   data () {
     return {
+      message: '',
       x: 0,
       y: 0,
-      pos: [0, 0]
+      party: [
+        // [3, 3],
+        // [3, 4],
+      ],
     }
   },
   head: {
@@ -32,6 +41,9 @@ export default {
   watch: {
   },
   beforeMount () {
+    socket.on('new-message', (message) => {
+      this.messages.push(message)
+    })
   },
   mounted() {   
     let sketch = function (p5) {    
@@ -71,7 +83,18 @@ export default {
         //   this.speed *= -1;      
         // }
 
+
+        p5.noFill()
+        p5.stroke("white")
+        p5.strokeWeight(3)
+        for (let i = 0; i < this.party.length; i++) {
+          p5.ellipse(this.party[i][0] * tileWidth, this.party[i][1] * tileHeight, tileWidth, tileHeight);
+        }
+
+        p5.fill("white")
+        p5.noStroke()
         p5.ellipse(this.x * tileWidth, this.y * tileHeight, tileWidth, tileHeight);
+
       }  
     }
     sketch = sketch.bind(this)
@@ -81,6 +104,7 @@ export default {
   },
   methods: {
     dpadPress(e) {
+      this.sendMessage()
       this.move(e.dir)
     },
 
@@ -90,7 +114,17 @@ export default {
     },
 
     dpadRelease(e) {
-    }
+    },
+
+    sendMessage () {
+      const message = {
+        date: new Date().toJSON(),
+        text: 'dpad pressed'
+      }
+      this.messages.push(message)
+      this.message = ''
+      socket.emit('send-message', message)
+    },
   }
 }
 </script>

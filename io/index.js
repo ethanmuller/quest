@@ -18,6 +18,7 @@ export default function () {
         fn(messages.slice(-50))
       })
       socket.on('send-message', function (message) {
+        console.log(socket.id)
         messages.push(message)
         socket.broadcast.emit('new-message', message)
       })
