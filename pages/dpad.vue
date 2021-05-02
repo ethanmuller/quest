@@ -6,7 +6,7 @@
     <div id="controls">
       
       <div class="left">
-        <button id="dpad">
+        <button @dpadPress="dpadPress" @dpadRelease="dpadRelease" v-dpad id="dpad">
           <span class="y"></span>
           <span class="x"></span>
           <span class="circle"></span>
@@ -25,54 +25,6 @@
     </div>
     </article>
 </template>
-
-<script>
-import socket from '~/plugins/socket.io.js'
-
-export default {
-  data () {
-    return { }
-  },
-  head: {
-    title: 'Nuxt.js with Socket.io'
-  },
-  watch: {
-  },
-  beforeMount () {
-  },
-  mounted() {   
-    const script = function (p5) {    
-      var speed = 2;    
-      var posX = 0;
-      
-      p5.setup = _ => {      
-        p5.createCanvas(500, 500);      
-        p5.ellipse(p5.width / 2, p5.height / 2, 500, 500);    
-      }
-      p5.draw = _ => {      
-        p5.background(0);
-        const degree = p5.frameCount * 3;      
-        const y = p5.sin(p5.radians(degree)) * 50;
-        
-        p5.push();
-        p5.translate(0, p5.height / 2);
-        p5.ellipse(posX, y, 50, 50);
-        p5.pop();
-        posX += speed;
-        
-        if (posX > p5.width || posX < 0) {    
-          speed *= -1;      
-        }
-      }  
-    }
-    // NOTE: Use p5 as an instance mode
-    const P5 = require('p5');
-    new P5(script);
-  },
-  methods: {
-  }
-}
-</script>
 
 <style>
 
@@ -99,6 +51,7 @@ audio {
 }
 
 body {
+  background: var(--bg);
   /* overflow: hidden; */
   flex-direction: column;
   justify-content: flex-start;
@@ -463,3 +416,83 @@ section a {
   display: inline-block;
 }
 </style>
+
+<script>
+import socket from '~/plugins/socket.io.js'
+
+export default {
+  data () {
+    return {
+      x: 0,
+      y: 0,
+      pos: [0, 0]
+    }
+  },
+  head: {
+    title: 'Nuxt.js with Socket.io'
+  },
+  watch: {
+  },
+  beforeMount () {
+  },
+  mounted() {   
+    let sketch = function (p5) {    
+      const canvasSize = 666;
+      const numTilesW = 8;
+      const numTilesH = 8;
+      const tileWidth = canvasSize / numTilesW;
+      const tileHeight = canvasSize / numTilesH;
+      
+      p5.setup = _ => {      
+        p5.createCanvas(canvasSize, canvasSize);      
+        p5.ellipse(p5.width / 2, p5.height / 2, 500, 500);    
+      }
+      p5.draw = _ => {      
+        p5.background(0);
+        // p5.push();
+        // p5.translate(0, p5.height / 2);
+        // p5.ellipse(posX, y, 50, 50);
+        // p5.pop();
+        // posX += this.speed;
+
+        // wrap
+        if (this.x > numTilesW) {
+          this.x = 0;
+        }
+        if (this.x < 0) {
+          this.x = numTilesW;
+        }
+        if (this.y > numTilesH) {
+          this.y = 0;
+        }
+        if (this.y < 0) {
+          this.y = numTilesH;
+        }
+        
+        // if (posX > p5.width || posX < 0) {    
+        //   this.speed *= -1;      
+        // }
+
+        p5.ellipse(this.x * tileWidth, this.y * tileHeight, tileWidth, tileHeight);
+      }  
+    }
+    sketch = sketch.bind(this)
+    // NOTE: Use p5 as an instance mode
+    const P5 = require('p5');
+    new P5(sketch);
+  },
+  methods: {
+    dpadPress(e) {
+      this.move(e.dir)
+    },
+
+    move(dir) {
+      this.x = this.x + dir[0]
+      this.y = this.y + dir[1]
+    },
+
+    dpadRelease(e) {
+    }
+  }
+}
+</script>
