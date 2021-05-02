@@ -8,7 +8,7 @@
     <div class="left">
       <Dpad @dpadRelease="dpadRelease" @dpadPress="dpadPress"></Dpad>
     </div>
-    <div class="right buttons" id="r"><Btn></Btn></div>
+    <div class="right buttons" id="r"><Btn @btnRelease="btnRelease" @btnPress="btnPress"></Btn></div>
       
     </div>
     </article>
@@ -34,6 +34,7 @@ export default {
       message: '',
       x: 0,
       y: 0,
+      isClenched: false,
       party: [
         // [3, 3],
         // [3, 4],
@@ -85,8 +86,7 @@ export default {
         
         p5.fill("white")
         p5.noStroke()
-        p5.ellipse(this.x * tileWidth, this.y * tileHeight, tileWidth, tileHeight);
-        
+        p5.ellipse(this.x * tileWidth, this.y * tileHeight, tileWidth * (this.isClenched ? 0.5 : 1));
       }  
     }
     sketch = sketch.bind(this)
@@ -96,11 +96,11 @@ export default {
   },
   methods: {
     btnPress(e) {
-      console.log('pressing')
-      // this.move(e.dir)
+      this.isClenched = true
     },
 
     btnRelease(e) {
+      this.isClenched = false
     },
     
     dpadPress(dir) {

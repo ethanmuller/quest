@@ -428,12 +428,14 @@ export default {
       e.preventDefault()
       this.pressSound()
       this.isPressed = true
+      this.$emit('btnPress')
     },
 
     btnRelease(e) {
       e.preventDefault()
       this.releaseSound()
       this.isPressed = false
+      this.$emit('btnRelease')
     },
   }
 }
