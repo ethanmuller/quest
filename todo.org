@@ -1,0 +1,20 @@
+HANG OUT HERE:
+http://party.emu.media
+
+* todo
+** DONE load party properly
+CLOSED: [2021-05-02 Sun 11:54]
+we should see other players after loading
+** DONE try out production changes
+CLOSED: [2021-05-02 Sun 12:23]
+** DONE add btn
+CLOSED: [2021-05-02 Sun 12:34]
+** DONE make btn like dpad
+CLOSED: [2021-05-02 Sun 12:53]
+** IN-PROGRESS add action
+** TODO walls
+** TODO create pushability
+** TODO create sprites in aseprite
+** TODO create world map in tiled
+** TODO keeb controls
+** TODO chat
