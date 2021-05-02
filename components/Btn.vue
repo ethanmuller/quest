@@ -1,5 +1,5 @@
 <template>
-  <button ref="btn" id="play">
+  <button ref="btn" id="play" v-bind:class="{ down: isPressed }">
   </button>
 </template>
 
@@ -396,13 +396,18 @@ section a {
 
 <script>
 import useSound from 'vue-use-sound'
-import btnLoA from '../static/btn-lo-a.wav'
-import btnLoB from '../static/btn-lo-b.wav'
+import btnA from '../static/btn-a.wav'
+import btnB from '../static/btn-b.wav'
 
 export default {
+  data() {
+    return {
+      isPressed: false,
+    }
+  },
   setup() {
-    const [pressSound] = useSound(btnLoA)
-    const [releaseSound] = useSound(btnLoB)
+    const [pressSound] = useSound(btnA)
+    const [releaseSound] = useSound(btnB)
     
     return {
       pressSound,
@@ -421,12 +426,14 @@ export default {
   methods: {
     btnPress(e) {
       e.preventDefault()
-      console.log(true)
+      this.pressSound()
+      this.isPressed = true
     },
 
     btnRelease(e) {
       e.preventDefault()
-      console.log(false)
+      this.releaseSound()
+      this.isPressed = false
     },
   }
 }
