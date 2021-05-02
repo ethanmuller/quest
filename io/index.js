@@ -2,12 +2,7 @@ import http from 'http'
 import socketIO from 'socket.io'
 
 export default function () {
-  // every time we receive a location, we store it here.
-  // to build a list of all clients,
-  // we loop over all sockets, then look in this list for a location
-  // otherwise provide location as [0, 0].
-  // it's okay if disconnections happen because ids are unique
-  const locations = {}
+  const world = {}
 
   this.nuxt.hook('render:before', (renderer) => {
     const server = http.createServer(this.nuxt.renderer.app)
@@ -18,40 +13,40 @@ export default function () {
     // close this server on 'close' event
     this.nuxt.hook('close', () => new Promise(server.close))
 
+    function getMembersList(fn) {
+      io.fetchSockets()
+        .then((sox) => {
+          const members = []
+          sox.forEach((socket) => {
+            let member = world[socket.id]
+
+            if (!member) {
+              member = {
+                id: socket.id,
+                location: [0, 0],
+                isClenched: false,
+              }
+            }
+
+            members.push(member)
+          })
+
+          fn(members)
+        })
+    }
+
     // Add socket.io events
     const messages = []
     io.on('connection', (socket) => {
-
-      // io.fetchSockets()
-      //   .then((sox) => {
-      //     const party = []
-      //     sox.forEach((p) => party.push({id: p.id, location: locations[p.id] || [0, 0]}))
-      //     socket.broadcast.emit('party-update', party)
-      //   })
-
-      function getPartyList(fn) {
-        io.fetchSockets()
-          .then((sox) => {
-            const party = []
-            sox.forEach((p) => {
-              const member = {
-                id: p.id,
-                location: locations[p.id] || [0, 0]
-              }
-
-              party.push(member)
-            })
-
-            fn(party)
-
-            // socket.broadcast.emit('party-update', party)
-          })
-      }
       
       socket.on('join', function (fn) {
-        console.log('somebody just joined!')
+        world[socket.id] = {
+          id: socket.id,
+          location: [0, 0],
+          isClenched: false,
+        }
 
-        getPartyList((party) => {
+        getMembersList((party) => {
           fn(party)
         })
       })
@@ -64,14 +59,19 @@ export default function () {
         socket.broadcast.emit('new-message', message)
       })
       socket.on('send-move', function(location) {
-        // const who = socket.id;
-        // const clientList = io.sockets.adapter.rooms['/'];
-        // socket.broadcast.emit('new-message', message)
-        locations[socket.id] = location
+        const member = world[socket.id]
+        
+        if (member) {
+          member.location = location
+        }
+        // world[socket.id].location = location
 
-        getPartyList((party) => {
+        getMembersList((party) => {
           socket.broadcast.emit('party-update', party)
         })
+      })
+      socket.on('send-clench', function(isClenched) {
+        console.log(isClenched)
       })
     })
   })

@@ -1,6 +1,15 @@
 HANG OUT HERE:
 http://party.emu.media
 
+* ideas
+** party
+a party contains members
+** member
+a member has these properties
+- id (shared with socket id)
+- location (array or vector of two integers)
+- isClenching (boolean)
+
 * todo
 ** DONE load party properly
 CLOSED: [2021-05-02 Sun 11:54]
@@ -11,6 +20,7 @@ CLOSED: [2021-05-02 Sun 12:23]
 CLOSED: [2021-05-02 Sun 12:34]
 ** DONE make btn like dpad
 CLOSED: [2021-05-02 Sun 12:53]
+
 ** IN-PROGRESS add action
 ** TODO walls
 ** TODO create pushability

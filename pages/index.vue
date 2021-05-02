@@ -95,12 +95,22 @@ export default {
     new P5(sketch);
   },
   methods: {
-    btnPress(e) {
-      this.isClenched = true
+    btnPress() {
+      this.clenchStart()
     },
 
-    btnRelease(e) {
+    btnRelease() {
+      this.clenchEnd()
+    },
+
+    clenchStart() {
+      this.isClenched = true
+      socket.emit('send-clench', this.isClenched)
+    },
+    
+    clenchEnd() {
       this.isClenched = false
+      socket.emit('send-clench', this.isClenched)
     },
     
     dpadPress(dir) {
