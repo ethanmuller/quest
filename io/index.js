@@ -73,7 +73,16 @@ export default function () {
         })
       })
       socket.on('send-clench', function(isClenched) {
-        console.log(isClenched)
+        const member = world[socket.id]
+        
+        if (member) {
+          member.isClenched = isClenched
+
+          getMembersList((members) => {
+            const world = members
+            socket.broadcast.emit('world-update', world)
+          })
+        }
       })
     })
   })

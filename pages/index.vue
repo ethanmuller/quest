@@ -81,7 +81,7 @@ export default {
           if (socket.id === this.world[i].id) {
             continue;
           }
-          p5.ellipse(this.world[i].location[0] * tileWidth, this.world[i].location[1] * tileHeight, tileWidth, tileHeight);
+          p5.ellipse(this.world[i].location[0] * tileWidth, this.world[i].location[1] * tileHeight,  tileWidth * (this.world[i].isClenched ? 0.5 : 1));
         }
         
         p5.fill("white")
