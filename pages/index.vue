@@ -26,7 +26,7 @@ const tileHeight = canvasSize / numTilesH;
 export default {
   asyncData () {
     return new Promise(resolve =>
-      socket.emit('join', data => resolve({ party: data }))
+      socket.emit('join', data => resolve({ world: data }))
     )
   },
   data () {
@@ -35,7 +35,7 @@ export default {
       x: 0,
       y: 0,
       isClenched: false,
-      party: [
+      world: [
         // [3, 3],
         // [3, 4],
       ],
@@ -50,8 +50,8 @@ export default {
     socket.on('new-message', (message) => {
       this.messages.push(message)
     })
-    socket.on('party-update', (partyList) => {
-      this.party = partyList
+    socket.on('world-update', (world) => {
+      this.world = world
       console.log(this)
     })
   },
@@ -77,11 +77,11 @@ export default {
         p5.noFill()
         p5.stroke("white")
         p5.strokeWeight(3)
-        for (let i = 0; i < this.party.length; i++) {
-          if (socket.id === this.party[i].id) {
+        for (let i = 0; i < this.world.length; i++) {
+          if (socket.id === this.world[i].id) {
             continue;
           }
-          p5.ellipse(this.party[i].location[0] * tileWidth, this.party[i].location[1] * tileHeight, tileWidth, tileHeight);
+          p5.ellipse(this.world[i].location[0] * tileWidth, this.world[i].location[1] * tileHeight, tileWidth, tileHeight);
         }
         
         p5.fill("white")

@@ -46,8 +46,9 @@ export default function () {
           isClenched: false,
         }
 
-        getMembersList((party) => {
-          fn(party)
+        getMembersList((members) => {
+          const world = members
+          fn(world)
         })
       })
 
@@ -66,8 +67,9 @@ export default function () {
         }
         // world[socket.id].location = location
 
-        getMembersList((party) => {
-          socket.broadcast.emit('party-update', party)
+        getMembersList((members) => {
+          const world = members
+          socket.broadcast.emit('world-update', world)
         })
       })
       socket.on('send-clench', function(isClenched) {
