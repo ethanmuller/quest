@@ -8,8 +8,7 @@
     <div class="left">
       <Dpad @dpadRelease="dpadRelease" @dpadPress="dpadPress"></Dpad>
     </div>
-    <div class="right buttons" id="r">
-      </div>
+    <div class="right buttons" id="r"><Btn></Btn></div>
       
     </div>
     </article>
@@ -96,8 +95,19 @@ export default {
     new P5(sketch);
   },
   methods: {
+    btnPress(e) {
+      console.log('pressing')
+      // this.move(e.dir)
+    },
+
+    btnRelease(e) {
+    },
+    
     dpadPress(e) {
       this.move(e.dir)
+    },
+
+    dpadRelease(e) {
     },
     
     move(dir) {
@@ -119,9 +129,6 @@ export default {
       }
       
       socket.emit('send-move', [this.x, this.y])
-    },
-
-    dpadRelease(e) {
     },
 
     sendMessage () {
