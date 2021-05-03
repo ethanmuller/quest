@@ -1,5 +1,9 @@
-HANG OUT HERE:
+* TO PLAY
+the game is hosted here
 http://party.emu.media
+
+* TO DEVELOP
+=npm install=, =npm run dev=
 
 * ideas
 ** party
@@ -21,7 +25,8 @@ CLOSED: [2021-05-02 Sun 12:34]
 ** DONE make btn like dpad
 CLOSED: [2021-05-02 Sun 12:53]
 
-** IN-PROGRESS add action
+** DONE add action
+CLOSED: [2021-05-02 Sun 20:19]
 ** TODO walls
 ** TODO create pushability
 ** TODO create sprites in aseprite
