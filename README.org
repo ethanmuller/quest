@@ -1,35 +1,3 @@
 * TO PLAY
 the game is hosted here
 http://party.emu.media
-
-* TO DEVELOP
-=npm install=, =npm run dev=
-
-* ideas
-** party
-a party contains members
-** member
-a member has these properties
-- id (shared with socket id)
-- location (array or vector of two integers)
-- isClenching (boolean)
-
-* todo
-** DONE load party properly
-CLOSED: [2021-05-02 Sun 11:54]
-we should see other players after loading
-** DONE try out production changes
-CLOSED: [2021-05-02 Sun 12:23]
-** DONE add btn
-CLOSED: [2021-05-02 Sun 12:34]
-** DONE make btn like dpad
-CLOSED: [2021-05-02 Sun 12:53]
-
-** DONE add action
-CLOSED: [2021-05-02 Sun 20:19]
-** TODO walls
-** TODO create pushability
-** TODO create sprites in aseprite
-** TODO create world map in tiled
-** TODO keeb controls
-** TODO chat
