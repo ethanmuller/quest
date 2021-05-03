@@ -42,7 +42,7 @@ export default function () {
       socket.on('join', function (fn) {
         world[socket.id] = {
           id: socket.id,
-          location: [0, 0],
+          location: [3, 3],
           isClenched: false,
         }
 
