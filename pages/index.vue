@@ -52,7 +52,6 @@ export default {
     })
     socket.on('world-update', (world) => {
       this.world = world
-      console.log(this)
     })
   },
   mounted() {   
