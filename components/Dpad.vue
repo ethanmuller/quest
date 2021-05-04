@@ -87,18 +87,6 @@ pre {
   top: 0;
 }
 
-#controls {
-  /* position: absolute; */
-  /* transform: rotate(-90deg); */
-  /* right: 0.5rem; */
-  /* top: 50%; */
-  display: flex;
-  padding: 0 0.5rem;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%
-}
-
 #r {
   /* padding-right: 10vmin */
 }

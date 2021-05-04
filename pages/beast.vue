@@ -5,23 +5,14 @@
   </main>
   <div id="controls">
     
-    
+    <div class="left">
       <Dpad @dpadRelease="dpadRelease" @dpadPress="dpadPress"></Dpad>
-    
+    </div>
+    <div class="right buttons" id="r"><Btn @btnRelease="btnRelease" @btnPress="btnPress"></Btn></div>
       
     </div>
     </article>
 </template>
-
-<style>
-#controls {
-  display: flex;
-  padding: 0 0.5rem;
-  align-items: center;
-  justify-content: center;
-  width: 100%
-}
-</style>
 
 <script>
 import socket from '~/plugins/socket.io.js'
@@ -29,8 +20,8 @@ import socket from '~/plugins/socket.io.js'
 const canvasSize = 666;
 const numTilesW = 8;
 const numTilesH = 8;
-const tileWidth = canvasSize / numTilesW;
-const tileHeight = canvasSize / numTilesH;
+const tileWidth = canvasSize / numTilesW * 0.25;
+const tileHeight = canvasSize / numTilesH * 0.25;
 
 const things = {
   '#': {
@@ -94,7 +85,7 @@ function thingAtLocation(x, y) {
 export default {
   asyncData () {
     return new Promise(function (resolve) {
-      return socket.emit('join', { type: 'normie' }, function (data) {
+      return socket.emit('join', { type: 'beast' }, function (data) {
         return resolve({ world: data })
       })
     })
@@ -112,7 +103,7 @@ export default {
     }
   },
   head: {
-    title: 'QUEST',
+    title: 'QUEST/BEAST',
     link: [{ rel: 'icon', type: 'image/x-icon', href: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90'><text y='0.9em' x='-0.125em' font-size='80'>⚪</text></svg>" }],
   },
   watch: {
@@ -135,7 +126,7 @@ export default {
         p5.background(0);
         // p5.push();
         // p5.translate(-this.x * tileWidth + p5.width/2, -this.y * tileWidth + p5.height/2);
-        p5.translate((this.x - this.x % 9) * tileWidth * -1, (this.y - this.y % 9) * tileWidth * -1);
+        // p5.translate((this.x - this.x % 9) * tileWidth * -1, (this.y - this.y % 9) * tileWidth * -1);
         // p5.ellipse(posX, y, 50, 50);
         // p5.pop();
         // posX += this.speed;
@@ -147,6 +138,7 @@ export default {
         
         // draw static world
         p5.fill("#666")
+        p5.noStroke()
         p5.rectMode(p5.RADIUS)
         for (let y = 0; y < world.length; y++) {
           for (let x = 0; x < world[0].length; x++) {
@@ -157,31 +149,23 @@ export default {
         }
         
         // draw other players
+        p5.fill("white")
         for (let i = 0; i < this.world.length; i++) {
           if (socket.id === this.world[i].id) {
             continue;
           }
-
-          if (this.world[i].type === 'beast') {
-            p5.noFill()
-            p5.stroke("#3B9B19")
-            p5.strokeWeight(tileWidth*0.2)
-          } else if (this.world[i].type === 'normie') {
-            p5.noStroke()
-            p5.fill("white")
-          }
-
           p5.ellipse(this.world[i].location[0] * tileWidth, this.world[i].location[1] * tileHeight,  tileWidth * (this.world[i].isClenched ? 0.9 : 1));
           
           if (this.x === this.world[i].location[0] &&
               this.y === this.world[i].location[1] && this.world[i].isClenched) {
-            this.kill()
+            // this.kill()
           }
         }
         
-        // draw players
-        p5.noStroke()
-            p5.fill("white")
+        // draw beast
+        p5.noFill()
+        p5.stroke("#3B9B19")
+        p5.strokeWeight(tileWidth*0.2)
         p5.ellipse(this.x * tileWidth, this.y * tileHeight, tileWidth * (this.isClenched ? 0.9 : 1));
       }  
     }
@@ -222,7 +206,6 @@ export default {
     },
     
     kill() {
-      document.body.style.opacity = 0
       const loc = { x: -999, y: -999 }
       this.moveAbsolute(loc)
       socket.emit('send-move', [loc.x, loc.y])

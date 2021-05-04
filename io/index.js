@@ -39,11 +39,13 @@ export default function () {
     const messages = []
     io.on('connection', (socket) => {
       
-      socket.on('join', function (fn) {
+      socket.on('join', function (opts, fn) {
+        console.log(`a ${opts.type} joined`)
         world[socket.id] = {
           id: socket.id,
           location: [3, 3],
           isClenched: false,
+          type: opts.type
         }
 
         getMembersList((members) => {
