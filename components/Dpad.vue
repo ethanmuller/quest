@@ -1,5 +1,5 @@
 <template>
-  <button ref="dpad" id="dpad">
+  <button ref="dpad" id="dpad" v-bind:class="dirClass">
     <span class="y"></span>
     <span class="x"></span>
   </button>
@@ -389,27 +389,105 @@ import useSound from 'vue-use-sound'
 import btnLoA from '../static/btn-lo-a.wav'
 import btnLoB from '../static/btn-lo-b.wav'
 
+const DIRS = {
+  up: [0,-1],
+  down: [0,1],
+  left: [-1,0],
+  right: [1,0],
+}
+
 export default {
+  data() {
+    return {
+      dirClass: 'ahh',
+      isPressed: false,
+    }
+  },
   setup() {
     const [pressSound] = useSound(btnLoA)
     const [releaseSound] = useSound(btnLoB)
-
+    
     return {
       pressSound,
       releaseSound,
     }
   },
-
+  
   mounted() {
-
-    this.$refs.dpad.addEventListener('touchstart', this.dpadPress)
-    this.$refs.dpad.addEventListener('mousedown', this.dpadPress)
+    this.$refs.dpad.addEventListener('touchstart', this.handleDpadPressPointerEvent)
+    this.$refs.dpad.addEventListener('mousedown', this.handleDpadPressPointerEvent)
     this.$refs.dpad.addEventListener('touchend', this.dpadRelease)
     this.$refs.dpad.addEventListener('mouseup', this.dpadRelease)
+    
+    document.body.addEventListener('keydown', this.handleDpadKeydownEvent)
+    document.body.addEventListener('keyup', this.dpadRelease)
+  },
+
+  unmounted() {
+    document.body.removeEventListener('keydown', this.handleDpadKeydownEvent)
+    document.body.removeEventListener('keyup', this.dpadRelease)
   },
   
   methods: {
-    dpadPress(e) {
+    dpadPress(dir) {
+      if (this.isPressed) {
+        return
+      }
+
+      this.isPressed = true;
+
+      switch(dir) {
+      case DIRS.up:
+        this.dirClass = 'up'
+        break;
+      case DIRS.down:
+        this.dirClass = 'down'
+        break;
+      case DIRS.left:
+        this.dirClass = 'left'
+        break;
+      case DIRS.right:
+        this.dirClass = 'right'
+        break;
+      }
+      
+      this.pressSound()
+      this.$emit('dpadPress', dir)
+    },
+    
+    dpadRelease(e) {
+      this.releaseSound()
+      this.dirClass = ''
+      this.isPressed = false
+      this.$emit('dpadRelease')
+    },
+    
+    handleDpadKeydownEvent(e) {
+      e.preventDefault();
+      switch(e.key) {
+        case 'w':
+        case 'ArrowUp':
+          this.dpadPress(DIRS.up)
+          break;
+        case 's':
+        case 'ArrowDown':
+          this.dpadPress(DIRS.down)
+          break;
+        case 'a':
+        case 'ArrowLeft':
+          this.dpadPress(DIRS.left)
+          break;
+        case 'd':
+        case 'ArrowRight':
+          this.dpadPress(DIRS.right)
+          break;
+      }
+    },
+    
+    handleDpadPressPointerEvent(e) {
+      // this nasty little function takes a touchstart or mousedown event
+      // and determines which direction was pressed
+
       e.preventDefault();
 
       const rect = e.target.getBoundingClientRect()
@@ -427,29 +505,17 @@ export default {
 
       if (Math.abs(p[0]) > Math.abs(p[1])) {
         if (p[0] > 0) {
-          this.$refs.dpad.classList.add('right')
-          dir = [1, 0]
+          this.dpadPress(DIRS.right)
         } else {
-          this.$refs.dpad.classList.add('left')
-          dir = [-1, 0]
+          this.dpadPress(DIRS.left)
         }
       } else {
         if (p[1] > 0) {
-          this.$refs.dpad.classList.add('down')
-          dir = [0, 1]
+          this.dpadPress(DIRS.down)
         } else {
-          this.$refs.dpad.classList.add('up')
-          dir = [0, -1]
+          this.dpadPress(DIRS.up)
         }
       }
-      
-      this.pressSound()
-      this.$emit('dpadPress', dir)
-    },
-    dpadRelease(e) {
-      this.releaseSound()
-      this.$refs.dpad.classList.remove('active', 'up', 'down', 'left', 'right')
-      this.$emit('dpadRelease')
     },
   }
 }

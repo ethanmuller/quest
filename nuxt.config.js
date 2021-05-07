@@ -10,7 +10,7 @@ export default {
   },
 
   serverMiddleware: [
-    { path: "/api",  handler: '~/api/eggs.js', },
+    { path: "/api/party",  handler: '~/api/party.js', },
   ],
 
   // Global page headers: https://go.nuxtjs.dev/config-head
