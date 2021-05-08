@@ -4,10 +4,10 @@ import socketIO from 'socket.io'
 const players = []
 
 function getPlayer(id) {
-  return players.filter(player => player.id === id)
+  return players.find(player => player.id === id)
 }
 
-function getPlayers(room) {
+function getPlayersByRoom(room) {
   return players.filter(player => player.room === room)
 }
 
@@ -18,13 +18,16 @@ function addPlayer(id, room) {
 //           isClenched: false,
 //           type: 'normie',
 //         }
-  players.push({
+  const player = {
     id,
     room,
     isClenched: false,
     location: [3, 3],
     type: 'normie',
-  })
+  }
+
+  console.log('adding player', player)
+  players.push(player)
 }
 
 function deletePlayer(id) {
@@ -44,31 +47,6 @@ export default function () {
     // close this server on 'close' event
     this.nuxt.hook('close', () => new Promise(server.close))
 
-    function getMembersList(fn) {
-      io.fetchSockets()
-        .then((sox) => {
-          const members = []
-          sox.forEach((socket) => {
-            let member = world[socket.id]
-
-            if (!member) {
-              member = {
-                id: socket.id,
-                location: [0, 0],
-                isClenched: false,
-              }
-            }
-
-            members.push(member)
-          })
-
-          fn(members)
-        })
-    }
-
-    // Add socket.io events
-    const messages = []
-
     io.on('connection', (socket) => {
       // socket.on('join', function (opts, fn) {
       //   world[socket.id] = {
@@ -84,41 +62,15 @@ export default function () {
       //   })
       // })
 
-      socket.on('last-messages', function (fn) {
-        fn(messages.slice(-50))
-      })
-      socket.on('send-message', function (message) {
-        messages.push(message)
-        socket.broadcast.emit('new-message', message)
-      })
       socket.on('room', async function (data) {
-        const room = io.sockets.adapter.rooms.get(data.code);
-
-        // console.log(room)
-
-        // socket.state = {
-        //   name: 'charlie',
-        // }
-
-        const player = {
-          id: socket.id,
-          location: [3, 3],
-          isClenched: false,
-          type: 'normie',
-        }
-        
         socket.join(data.code)
         addPlayer(socket.id, data.code)
-
-        // console.log(players)
-        console.log(`${players.length} players`)
-
-        world[socket.id] = player
-
-        getMembersList((members) => {
-          const world = members
-          socket.broadcast.emit('world-update', world)
-        })
+        console.log(`${getPlayersByRoom(data.code).length} players in ${data.code}`)
+        socket.to(data.code).emit('world-update', getPlayersByRoom(data.code))
+        // getMembersList((members) => {
+        //   const world = members
+        //   socket.broadcast.emit('world-update', world)
+        // })
       //   getMembersList((members) => {
       //     const world = members
       //     fn(world)
@@ -131,37 +83,29 @@ export default function () {
       })
       socket.on('disconnect', function (fn) {
         deletePlayer(socket.id)
-        console.log(`${players.length} players`)
-      })
-      socket.on('msg', function (msg) {
-        console.log(msg)
-        socket.to(msg.room).emit('msg', msg.msg)
+        // console.log(`${players.length} players`)
       })
       socket.on('send-move', function(location) {
-        const member = world[socket.id]
+        const player = getPlayer(socket.id)
         
-        if (member) {
-          member.location = location
-        }
-        // world[socket.id].location = location
-
-        getMembersList((members) => {
-          const world = members
-          socket.broadcast.emit('world-update', world)
-        })
-      })
-      socket.on('send-clench', function(isClenched) {
-        const member = world[socket.id]
-        
-        if (member) {
-          member.isClenched = isClenched
-
-          getMembersList((members) => {
-            const world = members
-            socket.broadcast.emit('world-update', world)
-          })
+        if (player) {
+          player.location = location
+          // console.log(getPlayersByRoom(player.room))
+          socket.to(player.room).emit('world-update', getPlayersByRoom(player.room))
         }
       })
+      // socket.on('send-clench', function(isClenched) {
+      //   const member = world[socket.id]
+        
+      //   if (member) {
+      //     member.isClenched = isClenched
+
+      //     // getMembersList((members) => {
+      //     //   const world = members
+      //     //   socket.broadcast.emit('world-update', world)
+      //     // })
+      //   }
+      // })
     })
   })
 }

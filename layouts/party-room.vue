@@ -33,10 +33,6 @@ export default {
         code: this.$route.params.code,
       }) 
     })
-
-    socket.on('msg', (msg) => {
-      console.log(msg)
-    })
   },
 }
 </script>
