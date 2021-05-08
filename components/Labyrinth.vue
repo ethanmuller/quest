@@ -117,18 +117,10 @@ export default {
     //   this.world = data
     // })
 
-    socket.on('connect', () => {
-      socket.emit('room', {
-        code: this.room
-      }) 
-    })
-
-    socket.on('new-message', (message) => {
-      this.messages.push(message)
-    })
     socket.on('world-update', (world) => {
       this.world = world
     })
+    socket.emit('send-move', [this.x, this.y])
   },
   setup() {
     const [deathSound] = useSound(scare)
@@ -138,6 +130,7 @@ export default {
     }
   },
   mounted() {   
+
     let sketch = function (p5) {    
       p5.setup = _ => {      
         p5.createCanvas(canvasSize, canvasSize);      

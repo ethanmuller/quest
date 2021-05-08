@@ -22,11 +22,11 @@ function addPlayer(id, room) {
     id,
     room,
     isClenched: false,
-    location: [3, 3],
+    location: [-999, -999],
     type: 'normie',
   }
 
-  console.log('adding player', player)
+  // console.log('adding player', player)
   players.push(player)
 }
 
@@ -62,11 +62,12 @@ export default function () {
       //   })
       // })
 
-      socket.on('room', async function (data) {
+      socket.on('room', function (data) {
+        console.log(data)
         socket.join(data.code)
         addPlayer(socket.id, data.code)
-        console.log(`${getPlayersByRoom(data.code).length} players in ${data.code}`)
-        socket.to(data.code).emit('world-update', getPlayersByRoom(data.code))
+        // console.log(`${getPlayersByRoom(data.code).length} players in ${data.code}`)
+        io.to(data.code).emit('world-update', getPlayersByRoom(data.code))
         // getMembersList((members) => {
         //   const world = members
         //   socket.broadcast.emit('world-update', world)
@@ -82,8 +83,11 @@ export default function () {
         // console.log(`${socket.id} joined ${data.code}, so now there are ${numClients} members in there`)
       })
       socket.on('disconnect', function (fn) {
-        deletePlayer(socket.id)
-        // console.log(`${players.length} players`)
+        const deletedPlayer = deletePlayer(socket.id)
+
+        if (deletedPlayer) {
+          socket.to(deletedPlayer.room).emit('world-update', getPlayersByRoom(deletedPlayer.room))
+        }
       })
       socket.on('send-move', function(location) {
         const player = getPlayer(socket.id)
@@ -91,7 +95,7 @@ export default function () {
         if (player) {
           player.location = location
           // console.log(getPlayersByRoom(player.room))
-          socket.to(player.room).emit('world-update', getPlayersByRoom(player.room))
+          io.to(player.room).emit('world-update', getPlayersByRoom(player.room))
         }
       })
       // socket.on('send-clench', function(isClenched) {
