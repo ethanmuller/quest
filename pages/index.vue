@@ -14,6 +14,7 @@
     <p class="host-note">
       First one here? Maybe you want to
       <button @click="hostRoom = createRoom()">create room</button>
+      {{ hostRoomTicket }}
     </p>
   </main>
 </template>
@@ -22,7 +23,8 @@
 export default {
   data() {
     return {
-      hostRoom: {}
+      hostRoom: {},
+      hostRoomTicket: '',
     }
   },
   
@@ -45,8 +47,13 @@ export default {
       const responseJSON = await response.json()
 
       this.$router.push({
-        path: `/party/${responseJSON.code}`,
+        name: 'party-code',
+        params: {
+          code: responseJSON.code,
+          ticket: this.hostRoomTicket,
+        },
       })
+// $router.push({name: 'next-page', params: {foo: 1}})
     },
   },
 }

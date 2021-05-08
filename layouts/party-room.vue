@@ -1,6 +1,5 @@
 <template>
   <div>
-    its a party babyyyyy
     <Nuxt />
   </div>
 </template>

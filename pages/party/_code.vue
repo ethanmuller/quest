@@ -1,7 +1,6 @@
 <template>
 <div>
-  {{ this.$route.params.code }}
-  <button @click="asdf">send msg</button>
+  <Labyrinth :room="$route.params.code" />
 </div>
 </template>
 

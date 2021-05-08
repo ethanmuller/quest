@@ -1,6 +1,37 @@
 import http from 'http'
 import socketIO from 'socket.io'
 
+const players = []
+
+function getPlayer(id) {
+  return players.filter(player => player.id === id)
+}
+
+function getPlayers(room) {
+  return players.filter(player => player.room === room)
+}
+
+function addPlayer(id, room) {
+// {
+//           id: socket.id,
+//           location: [3, 3],
+//           isClenched: false,
+//           type: 'normie',
+//         }
+  players.push({
+    id,
+    room,
+    isClenched: false,
+    location: [3, 3],
+    type: 'normie',
+  })
+}
+
+function deletePlayer(id) {
+  const index = players.findIndex((player) => player.id === id);
+  if (index !== -1) return players.splice(index, 1)[0];
+}
+
 export default function () {
   const world = {}
 
@@ -37,20 +68,21 @@ export default function () {
 
     // Add socket.io events
     const messages = []
-    io.on('connection', (socket) => {
-      socket.on('join', function (opts, fn) {
-        world[socket.id] = {
-          id: socket.id,
-          location: [3, 3],
-          isClenched: false,
-          type: opts.type
-        }
 
-        getMembersList((members) => {
-          const world = members
-          fn(world)
-        })
-      })
+    io.on('connection', (socket) => {
+      // socket.on('join', function (opts, fn) {
+      //   world[socket.id] = {
+      //     id: socket.id,
+      //     location: [3, 3],
+      //     isClenched: false,
+      //     type: opts.type
+      //   }
+
+      //   getMembersList((members) => {
+      //     const world = members
+      //     fn(world)
+      //   })
+      // })
 
       socket.on('last-messages', function (fn) {
         fn(messages.slice(-50))
@@ -59,8 +91,47 @@ export default function () {
         messages.push(message)
         socket.broadcast.emit('new-message', message)
       })
-      socket.on('room', function (data) {
+      socket.on('room', async function (data) {
+        const room = io.sockets.adapter.rooms.get(data.code);
+
+        // console.log(room)
+
+        // socket.state = {
+        //   name: 'charlie',
+        // }
+
+        const player = {
+          id: socket.id,
+          location: [3, 3],
+          isClenched: false,
+          type: 'normie',
+        }
+        
         socket.join(data.code)
+        addPlayer(socket.id, data.code)
+
+        // console.log(players)
+        console.log(`${players.length} players`)
+
+        world[socket.id] = player
+
+        getMembersList((members) => {
+          const world = members
+          socket.broadcast.emit('world-update', world)
+        })
+      //   getMembersList((members) => {
+      //     const world = members
+      //     fn(world)
+      //   })
+
+        // const clients = io.sockets.adapter.rooms.get(data.code);
+        // const numClients = clients ? clients.size : 0;
+
+        // console.log(`${socket.id} joined ${data.code}, so now there are ${numClients} members in there`)
+      })
+      socket.on('disconnect', function (fn) {
+        deletePlayer(socket.id)
+        console.log(`${players.length} players`)
       })
       socket.on('msg', function (msg) {
         console.log(msg)
