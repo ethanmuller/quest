@@ -13,12 +13,43 @@
   
     <p class="host-note">
       First one here? Maybe you want to
-      <NuxtLink to="/joining">Create Room</NuxtLink>
+      <button @click="hostRoom = createRoom()">create room</button>
     </p>
   </main>
 </template>
 
 <script>
+export default {
+  data() {
+    return {
+      hostRoom: {}
+    }
+  },
+  
+  mounted() {
+    this.hostRoomTicket = Math.floor(Math.random() * 1000000)
+  },
+  
+  methods: {
+    async createRoom() {
+      const data = { ticket: this.hostRoomTicket }
+
+      const response = await fetch('/api/party', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
+
+      const responseJSON = await response.json()
+
+      this.$router.push({
+        path: `/party/${responseJSON.code}`,
+      })
+    },
+  },
+}
 </script>
 
 <style>

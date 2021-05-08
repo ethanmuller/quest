@@ -38,9 +38,7 @@ export default function () {
     // Add socket.io events
     const messages = []
     io.on('connection', (socket) => {
-      
       socket.on('join', function (opts, fn) {
-        console.log(`a ${opts.type} joined`)
         world[socket.id] = {
           id: socket.id,
           location: [3, 3],
@@ -60,6 +58,13 @@ export default function () {
       socket.on('send-message', function (message) {
         messages.push(message)
         socket.broadcast.emit('new-message', message)
+      })
+      socket.on('room', function (data) {
+        socket.join(data.code)
+      })
+      socket.on('msg', function (msg) {
+        console.log(msg)
+        socket.to(msg.room).emit('msg', msg.msg)
       })
       socket.on('send-move', function(location) {
         const member = world[socket.id]

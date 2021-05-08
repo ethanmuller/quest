@@ -3,7 +3,6 @@ const app = express()
 const bodyParser = require('body-parser')
 
 app.use(bodyParser.json())
-console.log('asdf')
 // console.log(context)
 
 const parties = []
