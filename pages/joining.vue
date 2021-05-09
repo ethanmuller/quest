@@ -2,7 +2,7 @@
   <main>
     <NuxtLink to="/home">back</NuxtLink>
     <div>please draw yourself</div>
-    <NuxtLink to="/room">room</NuxtLink>
+    <NuxtLink to="/party">party</NuxtLink>
   </main>
 </template>
 

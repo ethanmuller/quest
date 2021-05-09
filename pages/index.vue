@@ -2,19 +2,18 @@
 <main>
   
   <div class="join-chunk">
-    <div class="input-and-button">
+    <form @submit.prevent="joinParty" class="input-and-button">
       <label>
-        Lobby Code
-        <input type="text">
+        Party Code
+        <input type="text" v-model="partyCode">
+        <span class="hint" v-if="partyCode.length > 4">Code should be no more than 4 characters</span>
       </label>
-      <NuxtLink class="join-button" to="/joining">Join</NuxtLink>
-    </div>
+      <button class="join-button" :disabled="partyCode.length !== 4">Join</button>
+    </form>
   </div>
   
     <p class="host-note">
-      First one here? Maybe you want to
-      <button @click="hostRoom = createRoom()">create room</button>
-      {{ hostRoomTicket }}
+      <button @click="hostParty = createParty()">create party</button>
     </p>
   </main>
 </template>
@@ -23,19 +22,20 @@
 export default {
   data() {
     return {
-      hostRoom: {},
-      hostRoomTicket: '',
+      hostParty: {},
+      hostPartyTicket: '',
+      partyCode: '',
     }
   },
   
   mounted() {
-    this.hostRoomTicket = Math.floor(Math.random() * 1000000)
+    this.hostPartyTicket = Math.floor(Math.random() * 1000000)
   },
   
   methods: {
-    async createRoom() {
-      const data = { ticket: this.hostRoomTicket }
-
+    async createParty() {
+      const data = { ticket: this.hostPartyTicket }
+      
       const response = await fetch('/api/party', {
         method: 'POST',
         headers: {
@@ -43,55 +43,72 @@ export default {
         },
         body: JSON.stringify(data)
       })
-
+      
       const responseJSON = await response.json()
-
+      
       this.$router.push({
-        name: 'party-code',
+        name: 'party-party',
         params: {
-          code: responseJSON.code,
-          ticket: this.hostRoomTicket,
+          party: responseJSON.id,
+          role: 'host',
+          ticket: this.hostPartyTicket,
         },
       })
-// $router.push({name: 'next-page', params: {foo: 1}})
+      // $router.push({name: 'next-page', params: {foo: 1}})
     },
+    joinParty() {
+      this.$router.push({
+        name: 'party-party',
+        params: {
+          party: this.partyCode,
+          role: 'guest',
+        },
+      })
+    }
   },
 }
 </script>
 
 <style>
-  main {
-    min-height: calc(100vh - 5rem);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
+main {
+  min-height: calc(100vh - 5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
-  .join-chunk {
-    flex: 1;
+.join-chunk {
+  flex: 1;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
+.input-and-button {
+  display: flex;
+  align-items: flex-start;
+}
 
-  .input-and-button {
-    display: flex;
-    align-items: flex-end;
-  }
-
-  .join-button {
+.join-button {
   display: inline-block;
   padding: 0.5rem 2rem;
-  }
+  margin-top: 0.75rem;
+}
 
-  .host-note {
-    align-self: end;
-    padding-right: 3rem;
-  }
+.host-note {
+  align-self: end;
+  padding-right: 3rem;
+}
 
-  input {
-    display: block;
-  }
+input {
+  display: block;
+}
+
+.hint {
+  max-width: 13em;
+  display: inline-block;
+  font-size: 0.7rem;
+}
 </style>

@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import socket from '~/plugins/socket.io.js'
+import socket from '~/plugins/socket.io-client.js'
 import world from './world.js'
 
 const canvasSize = 666;

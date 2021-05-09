@@ -7,11 +7,12 @@ app.use(bodyParser.json())
 
 const parties = []
 
-function makeid(length) {
+function makeId(length) {
   const result           = [];
-  const consonants       = 'BCDFGHJKLMNPRSTVYZ';
+  const consonants       = 'BCDFGHJLMPRSTVYZ';
   const vowels       = 'EOU';
   const charLists = [consonants, vowels]
+
   for ( let i = 0; i < length; i++ ) {
     let list
 
@@ -27,19 +28,23 @@ function makeid(length) {
   return result.join('');
 }
 
+function addParty(ticket) {
+  const party = {
+    ticket,
+    id: makeId(4)
+  }
+
+  parties.push(party)
+
+  return party
+}
+
 app.get('/', (req, res) => {
   res.json(parties)
 })
 
 app.post('/', (req, res) => {
-  const party = {
-    ticket: req.body.ticket,
-    code: makeid(4)
-  }
-
-  parties.push(party)
-  console.log(party.code)
-
+  const party = addParty(req.body.ticket)
   res.json(party)
 })
 

@@ -44,7 +44,6 @@
 </style>
 
 <script>
-import socket from '~/plugins/socket.io.js'
 import useSound from 'vue-use-sound'
 import scare from '../static/scare.wav'
 import world from '../maps/world.js'
@@ -84,7 +83,7 @@ function thingAtLocation(x, y) {
 }
 
 export default {
-  props: ['room'],
+  props: ['party'],
   
   asyncData () {
     return new Promise(function (resolve) {
