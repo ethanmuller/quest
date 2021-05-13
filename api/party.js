@@ -1,50 +1,26 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const partyManager = require('../lib/party-manager')
 
 app.use(bodyParser.json())
-// console.log(context)
-
-const parties = []
-
-function makeId(length) {
-  const result           = [];
-  const consonants       = 'BCDFGHJLMPRSTVYZ';
-  const vowels       = 'EOU';
-  const charLists = [consonants, vowels]
-
-  for ( let i = 0; i < length; i++ ) {
-    let list
-
-    if (i === 0 || i === length - 1) {
-      list = consonants
-    } else {
-      list = vowels
-    }
-
-    let charactersLength = list.length;
-    result.push(list.charAt(Math.floor(Math.random() * charactersLength)));
-  }
-  return result.join('');
-}
-
-function addParty(ticket) {
-  const party = {
-    ticket,
-    id: makeId(4)
-  }
-
-  parties.push(party)
-
-  return party
-}
 
 app.get('/', (req, res) => {
-  res.json(parties)
+  res.json(partyManager.partyList)
+})
+
+app.get('/:id', (req, res) => {
+  const party = partyManager.getParty(req.params.id)
+
+  if (!party) {
+    return res.sendStatus(404);
+  }
+
+  res.json(party)
 })
 
 app.post('/', (req, res) => {
-  const party = addParty(req.body.ticket)
+  const party = partyManager.addParty(req.body.ticket)
   res.json(party)
 })
 
