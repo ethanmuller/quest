@@ -1,26 +1,44 @@
 <template>
 <div>
-  <div v-if="$fetchState.pending">Joining party <strong>{{ $route.params.party.toUpperCase() }}</strong>...</div>
-  <div v-else-if="$fetchState.error">The party <strong>{{ $route.params.party.toUpperCase() }}</strong> doesn't exist. Are you sure you spelled it correctly?</div>
-  <div v-else-if="!$fetchState.pending && !$fetchState.error && partyRoom.isEnded">
-    The party <strong>{{ $route.params.party.toUpperCase() }}</strong> has ended.
+  <div v-if="!identitySet">
+    Party Code: <strong>{{ $route.params.party.toUpperCase() }}</strong>
+    <form @submit.prevent="setNickname">
+      <label>
+        Who are you?
+        <input v-model="nickname" />
+      </label>
+      <button :disabled="nickname === '' || nickname.length > 32">Set</button>
+    </form>
   </div>
-  <div v-else-if="!$fetchState.pending && !$fetchState.error && !partyRoom.isEnded">
-    <NuxtLink to="/">home</NuxtLink>
-
-    <div v-if="isConnected">
-      <div>you are in party <strong>{{ this.partyRoom.id }}</strong></div>
-      <ul v-for="member in people">
-        <li v-text="member.id"></li>
-      </ul>
-
-      <button @click="endPartyButton()">End Party</button>
-
+  <div v-if="identitySet">
+    <div v-if="$fetchState.pending">
+      Joining party <strong>{{ $route.params.party.toUpperCase() }}</strong>...
     </div>
+    <div v-else-if="$fetchState.error">
+      The party <strong>{{ $route.params.party.toUpperCase() }}</strong> doesn't exist.
+      Are you sure you spelled it correctly?
+    </div>
+    <div v-else-if="!$fetchState.pending && !$fetchState.error && partyRoom.isEnded">
+      The party <strong>{{ $route.params.party.toUpperCase() }}</strong> has ended.
+    </div>
+    <div v-else-if="!$fetchState.pending && !$fetchState.error && !partyRoom.isEnded">
+      <div v-if="isConnected">
+        <div>you are in party <strong>{{ this.partyRoom.id }}</strong></div>
+        <ul v-for="member in people">
+          <li>
+            {{ member.nickname || '...' }}
+            <button @click="editNickname" v-if="member.id === socket.id">edit</button>
+          </li>
+        </ul>
 
-    <slot></slot>
+        <button @click="endPartyButton()">End Party</button>
 
-    <div v-if="!isConnected">trying to connect...</div>
+      </div>
+
+      <slot></slot>
+
+      <div v-if="!isConnected">trying to connect...</div>
+    </div>
   </div>
 </div>
 </template>
@@ -37,9 +55,16 @@ export default {
       isConnected: false,
       people: [],
       partyRoom: {},
+      identitySet: false,
+      nickname: '',
+      socket: null,
     }
   },
-  
+
+  created() {
+    this.socket = socket
+  },
+    
   async fetch() {
     this.partyRoom = await fetch(`/api/party/${this.$route.params.party}`, {
       method: 'GET',
@@ -75,6 +100,13 @@ export default {
   },
   
   methods: {
+    setNickname() {
+      this.identitySet = true
+      socket.emit('party-set-name', this.nickname)
+    },
+    editNickname() {
+      this.identitySet = false
+    },
     endPartyButton() {
       if (confirm(`This will kick everybody out of the party. You're sure you want to do this?`)) {
         socket.emit('party-end')
