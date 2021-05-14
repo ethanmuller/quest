@@ -48,6 +48,7 @@
 
 <script>
 import socket from '~/plugins/socket.io-client.js'
+import mapState from 'vuex'
 
 export default {
   data() {
@@ -56,9 +57,20 @@ export default {
       people: [],
       partyRoom: {},
       identitySet: false,
-      nickname: '',
       socket: null,
     }
+  },
+  
+  computed: {
+    peeps: state => state.party.people,
+    nickname: {
+      get () {
+        return this.$store.state.identity.nickname
+      },
+      set (value) {
+        this.$store.commit('identity/setNickname', value)
+      }
+    },
   },
 
   created() {
