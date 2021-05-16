@@ -1,6 +1,7 @@
 import partyManager from './party-manager'
 
 const players = []
+export let io = null;
 
 function getPlayer(id) {
   return players.find(player => player.id === id)
@@ -10,26 +11,44 @@ function getPlayersOfParty(party) {
   return players.filter(player => player.party === party.toLowerCase())
 }
 
-function addPlayer(socket, party) {
+function addPlayer(socket, partyCode) {
   const player = {
     id: socket.id,
-    party: party.toLowerCase(),
+    party: partyCode.toLowerCase(),
   }
 
   socket.join(player.party)
 
   players.push(player)
 
+  const party = partyManager.partyList.find(p => player.party === p.id)
+  if (party) {
+    party.memberCount = party.memberCount + 1
+  }
+
   return player
 }
 
 function deletePlayer(id) {
   const index = players.findIndex((player) => player.id === id);
-  if (index !== -1) return players.splice(index, 1)[0];
+  if (index !== -1) {
+
+    const party = partyManager.partyList.find(p => players[index].party === p.id)
+    if (party) {
+      party.memberCount = party.memberCount - 1
+    }
+
+    return players.splice(index, 1)[0]
+  }
 }
 
-
 export default function(socketInstance) {
+  // This line feels incredibly flaky,
+  // but I don't know how else to export
+  // the socketInstance that is passed to this
+  // function.
+  io = socketInstance
+
   socketInstance.on('connection', (socket) => {
 
     socket.on('party-join', function (data) {

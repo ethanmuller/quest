@@ -98,6 +98,7 @@ export default {
     socket.on('party-update', this.receivePartyUpdate)
     socket.on('party-doink', this.receiveDoink)
     socket.on('party-end', this.receivePartyEnd)
+    socket.on('test-event', this.receiveTestEvent)
     
     this.connect()
   },
@@ -109,6 +110,7 @@ export default {
     socket.off('party-update', this.receivePartyUpdate)
     socket.off('party-doink', this.receiveDoink)
     socket.off('party-end', this.receivePartyEnd)
+    socket.off('test-event', this.receiveTestEvent)
   },
   
   methods: {
@@ -125,6 +127,10 @@ export default {
         this.endParty()
       }
     },
+    receiveTestEvent() {
+      alert('the test worked!')
+    },
+    
     receivePartyEnd() {
       alert('this party is now over because somebody ended it')
       this.endParty()

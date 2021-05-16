@@ -1,6 +1,6 @@
 import http from 'http'
 import socketIO from 'socket.io'
-import partySocketManager from '../lib/party-socket-manager'
+import multiplayerManager from '../server/multiplayer-manager'
 
 export default function () {
   this.nuxt.hook('render:before', (renderer) => {
@@ -8,10 +8,14 @@ export default function () {
     const io = socketIO(server)
 
     // overwrite nuxt.server.listen()
-    this.nuxt.server.listen = (port, host) => new Promise(resolve => server.listen(this.nuxt.options.server.port, this.nuxt.options.server.host, resolve))
+    this.nuxt.server.listen = (port, host) => {
+      return new Promise(resolve => {
+      return server.listen(this.nuxt.options.server.port, this.nuxt.options.server.host, resolve)
+    })
+    }
     // close this server on 'close' event
     this.nuxt.hook('close', () => new Promise(server.close))
 
-    partySocketManager(io)
+    multiplayerManager(io)
   })
 }

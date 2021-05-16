@@ -3,7 +3,7 @@ const partyList = []
 function makeId(length) {
   const result           = [];
   const consonants       = 'BCDFGHJLMPRSTVYZ';
-  const vowels       = 'EOU';
+  const vowels       = 'AEIOU';
   const charLists = [consonants, vowels]
 
   for ( let i = 0; i < length; i++ ) {
@@ -24,7 +24,8 @@ function makeId(length) {
 function addParty(ticket) {
   const party = {
     ticket,
-    id: makeId(4).toLowerCase()
+    id: makeId(4).toLowerCase(),
+    memberCount: 0,
   }
 
   partyList.push(party)
