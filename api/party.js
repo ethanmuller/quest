@@ -18,7 +18,7 @@ app.post('/', (req, res) => {
 })
 
 app.get('/:id', (req, res) => {
-  const party = partyManager.getParty(req.params.id)
+  const party = partyManager.getParty(req.params.id.toLowerCase())
 
   if (!party) {
     return res.sendStatus(404);

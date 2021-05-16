@@ -1,7 +1,6 @@
 <template>
-  <div ref="root">
+  <div class="noselect" ref="root">
     <div>what do you look like?</div>
-    <div>id: {{socketId}}</div>
     <DrawingPad></DrawingPad>
     <button @click="saveDrawing">save</button>
   </div>
@@ -47,3 +46,14 @@ ${err}`)
   
 }
 </script>
+
+<style scoped>
+  .noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently */
+  }
+</style>

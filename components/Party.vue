@@ -1,12 +1,5 @@
 <template>
 <div>
-  <div v-if="!identitySet">
-    Party Code: <strong>{{ $route.params.party.toUpperCase() }}</strong>
-    <IdentitySetter @doink="setAvatarUrl()" :socketId="socketId" />
-
-    <div>id: {{socket.id}}</div>
-  </div>
-  <div v-if="identitySet">
     <div v-if="$fetchState.pending">
       Joining party <strong>{{ $route.params.party.toUpperCase() }}</strong>...
     </div>
@@ -19,27 +12,39 @@
     </div>
     <div v-else-if="!$fetchState.pending && !$fetchState.error && !partyRoom.isEnded">
       <div v-if="isConnected">
-        <div>you are in party <strong>{{ this.partyRoom.id }}</strong></div>
-        <ul v-for="member in people">
-          <li>
-            <img v-if="member.avatarUrl" :src="member.avatarUrl" />
-            <button @click="editNickname" v-if="member.id === socketId">edit</button>
-          </li>
-        </ul>
+        <div v-if="!identitySet">
+          Party Code: <strong>{{ $route.params.party.toUpperCase() }}</strong>
+          <IdentitySetter @doink="setAvatarUrl()" :socketId="socketId" />
+        </div>
+        <div v-if="identitySet">
 
-        <button @click="endPartyButton()">End Party</button>
+          <div>you are in party <strong>{{ this.partyRoom.id }}</strong></div>
+          <ul v-for="member in people">
+            <li>
+              <img v-if="member.avatarUrl" :src="member.avatarUrl" />
+              <button @click="editIdentity" v-if="member.id === socketId">edit</button>
+            </li>
+          </ul>
 
+          <button @click="endPartyButton()">End Party</button>
+
+        </div>
       </div>
 
       <slot></slot>
 
       <div v-if="!isConnected">trying to connect...</div>
     </div>
-  </div>
 </div>
 </template>
 
-<style>
+<style scoped>
+ul {
+  list-style: none;
+
+  display: flex;
+
+}
 </style>
 
 <script>
@@ -55,20 +60,13 @@ export default {
       identitySet: false,
       socket: null,
       socketId: null,
+      count: 0,
     }
   },
   
   computed: {
     avatarUrl: function() {
       this.$store.state.identity.avatarUrl
-    },
-    nickname: {
-      get () {
-        return this.$store.state.identity.nickname
-      },
-      set (value) {
-        this.$store.commit('identity/setNickname', value)
-      }
     },
   },
 
@@ -113,20 +111,11 @@ export default {
   },
   
   methods: {
-    setNickname() {
-      this.identitySet = true
-      socket.emit('party-set-name', this.nickname)
-    },
     setAvatarUrl() {
       this.identitySet = true
       socket.emit('party-set-avatar-url', this.$store.state.identity.avatarUrl)
     },
-    
-    // setAvatarUrl() {
-    //   this.identitySet = true
-    //   socket.emit('party-set-avatar-url', this.nickname)
-    // },
-    editNickname() {
+    editIdentity() {
       this.identitySet = false
     },
     endPartyButton() {
