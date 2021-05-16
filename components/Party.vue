@@ -1,8 +1,14 @@
 <template>
 <div>
   <div v-if="!identitySet">
-    <div>Party Code: <strong>{{ $route.params.party.toUpperCase() }}</strong></div>
-    <IdentitySetter />
+    Party Code: <strong>{{ $route.params.party.toUpperCase() }}</strong>
+    <form @submit.prevent="setNickname">
+      <label>
+        Who are you?
+        <input v-model="nickname" />
+      </label>
+      <button :disabled="nickname === '' || nickname.length > 32">Set</button>
+    </form>
   </div>
   <div v-if="identitySet">
     <div v-if="$fetchState.pending">
