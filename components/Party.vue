@@ -2,13 +2,9 @@
 <div>
   <div v-if="!identitySet">
     Party Code: <strong>{{ $route.params.party.toUpperCase() }}</strong>
-    <form @submit.prevent="setNickname">
-      <label>
-        Who are you?
-        <input v-model="nickname" />
-      </label>
-      <button :disabled="nickname === '' || nickname.length > 32">Set</button>
-    </form>
+    <IdentitySetter @doink="setAvatarUrl()" :socketId="socketId" />
+
+    <div>id: {{socket.id}}</div>
   </div>
   <div v-if="identitySet">
     <div v-if="$fetchState.pending">
@@ -26,8 +22,8 @@
         <div>you are in party <strong>{{ this.partyRoom.id }}</strong></div>
         <ul v-for="member in people">
           <li>
-            {{ member.nickname || '...' }}
-            <button @click="editNickname" v-if="member.id === socket.id">edit</button>
+            <img v-if="member.avatarUrl" :src="member.avatarUrl" />
+            <button @click="editNickname" v-if="member.id === socketId">edit</button>
           </li>
         </ul>
 
@@ -58,11 +54,14 @@ export default {
       partyRoom: {},
       identitySet: false,
       socket: null,
+      socketId: null,
     }
   },
   
   computed: {
-    peeps: state => state.party.people,
+    avatarUrl: function() {
+      this.$store.state.identity.avatarUrl
+    },
     nickname: {
       get () {
         return this.$store.state.identity.nickname
@@ -118,6 +117,15 @@ export default {
       this.identitySet = true
       socket.emit('party-set-name', this.nickname)
     },
+    setAvatarUrl() {
+      this.identitySet = true
+      socket.emit('party-set-avatar-url', this.$store.state.identity.avatarUrl)
+    },
+    
+    // setAvatarUrl() {
+    //   this.identitySet = true
+    //   socket.emit('party-set-avatar-url', this.nickname)
+    // },
     editNickname() {
       this.identitySet = false
     },
@@ -140,6 +148,7 @@ export default {
     },
     handleConnect() {
       console.log('connect')
+      this.socketId = socket.id
       this.isConnected = true
 
       socket.emit('party-join', { party: this.$route.params.party })

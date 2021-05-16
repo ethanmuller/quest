@@ -72,6 +72,13 @@ export default function(socketInstance) {
       socketInstance.in(player.party).emit('party-update', list)
     })
 
+    socket.on('party-set-avatar-url', function (url) {
+      const player = getPlayer(socket.id)
+      player.avatarUrl = url
+      const list = getPlayersOfParty(player.party)
+      socketInstance.in(player.party).emit('party-update', list)
+    })
+
     socket.on('disconnect', function (fn) {
       const deletedPlayer = deletePlayer(socket.id)
 

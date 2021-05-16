@@ -1,10 +1,12 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const fileUpload = require('express-fileupload')
 const partyManager = require('../server/party-manager')
 import { io } from '../server/multiplayer-manager'
 
 app.use(bodyParser.json())
+app.use(fileUpload())
 
 app.get('/', (req, res) => {
   res.json(partyManager.partyList)
@@ -25,10 +27,28 @@ app.get('/:id', (req, res) => {
   res.json(party)
 })
 
-app.get('/:id/upload', (req, res) => {
+app.post('/:id/upload', (req, res) => {
   
-  io.in(req.params.id).emit('test-event')
-  res.send('ok')
+
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send('No files were uploaded.')
+  }
+
+  const { party, socketId } = req.body
+  const drawling = req.files.drawling
+
+  const filename = `${party}-${socketId}.png`
+  const filepath = `${__dirname}/../static/uploads`
+  const url = `${req.headers.origin}/uploads/${filename}?when=${Date.now()}`
+
+  drawling.mv(
+    `${filepath}/${filename}`,
+    function (err) {
+      if (err) return res.status(500).send(err)
+      res.json({ url })
+    })
+
+  // io.in(req.params.id).emit('test-event')
 })
 
 module.exports = app
