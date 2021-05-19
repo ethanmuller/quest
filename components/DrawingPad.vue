@@ -1,17 +1,17 @@
 <template>
-  <div style="position: relative">
-    <canvas ref="cnv" width="333" height="333"></canvas>
-    <div class="pad-toolbar">
-      <button
-        style="margin-top: auto; padding: 0.5rem"
-        class="btn btn-ui"
-        aria-label="clear"
-        @click="clear"
-      >
-        clear
-      </button>
-    </div>
-  </div>
+<div style="width: 80%; text-align: center;">
+  <canvas ref="cnv" width="333" height="333"></canvas>
+
+  <button
+    style="margin-top: 1.5rem;"
+    class="btn"
+    aria-label="clear"
+    @click="clear"
+    >
+    Clear
+  </button>
+
+</div>
 </template>
 
 <script>
@@ -71,7 +71,8 @@ export default {
       this.ctx.moveTo(x0, y0);
       this.ctx.lineTo(x1, y1);
       this.ctx.strokeStyle = color;
-      this.ctx.lineWidth = 2;
+      this.ctx.lineCap = 'round';
+      this.ctx.lineWidth = 6;
       this.ctx.stroke();
       this.ctx.closePath();
       
@@ -88,6 +89,8 @@ export default {
     // });
     },
     onMouseDown(e) {
+    this.boundingClientRect = this.$refs.cnv.getBoundingClientRect()
+
       this.drawing = true
       this.current.x = (e.clientX||e.touches[0].clientX) - this.boundingClientRect.x + window.scrollX;
       this.current.y = (e.clientY||e.touches[0].clientY) - this.boundingClientRect.y + window.scrollY;
@@ -117,12 +120,6 @@ export default {
 
       this.drawLine(this.current.x, this.current.y, newX, newY, 'black', true)
     },
-    
-    drawl(pos) {
-      this.ctx.beginPath();
-      this.ctx.arc(pos.x, pos.y, 1, 0, 2 * Math.PI);
-      this.ctx.stroke(); 
-    },
     clear(e) {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     },
@@ -132,6 +129,7 @@ export default {
 
 <style scoped>
 canvas {
-  background: #eee;
+  background: #fff;
+  border-radius: 999rem;
 }
 </style>

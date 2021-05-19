@@ -1,8 +1,8 @@
 <template>
-  <div class="noselect" ref="root">
-    <div>what do you look like?</div>
+  <div class="noselect drawing-pad-container" ref="root">
+    <div class="draw-prompt">What do you look like?</div>
     <DrawingPad></DrawingPad>
-    <button @click="saveDrawing">save</button>
+    <button @click="saveDrawing" class="btn btn--primary" style="margin-top: 1.5rem">Save</button>
   </div>
 </template>
 

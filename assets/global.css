@@ -1,0 +1,161 @@
+body {
+    background: #F3F3F3;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+
+
+input[type="text"] {
+    font-family: inherit;
+    border: none;
+    font-size: 1.125rem;
+    padding: 0.7rem;
+    border-radius: 6px;
+    width: 9rem;
+}
+
+.input-label {
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.btn {
+    font-size: 18px;
+    color: black;
+    background: #D1D1D1;
+    border: none;
+    border-radius: 9px;
+    min-width: 98px;
+    padding: 0.7rem 1.2rem;
+    transition: 0.1s all ease-out;
+}
+
+.btn--primary {
+    font-weight: bold;
+    background: #6D36E2;
+    color: white;
+}
+
+.btn--danger {
+    font-weight: bold;
+    background: #f00;
+    color: white;
+}
+
+.btn--sm {
+    font-size: 14px;
+}
+
+.btn[disabled] {
+    background: #E7E7E7;
+    color: #A0A0A0;
+}
+
+.party-header {
+    padding: 1.5rem;
+    text-align: right;
+}
+
+.draw-prompt {
+    font-size: 27px;
+    text-align: center;
+    padding-bottom: 1rem;
+}
+
+.drawing-pad-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 25rem;
+    margin: 0 auto;
+    position: relative;
+}
+
+.party-list {
+  list-style: none;
+
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.party-list li {
+    width: 7rem;
+    margin: 1rem;
+    background: #ddd;
+    border-radius: 999rem;
+}
+
+.party-list img {
+    max-width: 100%;
+    border-radius: 999rem;
+    background: #fff;
+    display: block;
+}
+
+.party-list button {
+    display: block;
+    border: none;
+    background: transparent;
+    padding: 0;
+    position: relative;
+}
+
+.party-list .you {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    transform: translate(5px, 0) rotate(-45deg);
+}
+
+main {
+  min-height: calc(100vh - 5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.join-chunk {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.party-chunk {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  text-align: center;
+}
+
+.input-and-button {
+  display: flex;
+  align-items: flex-start;
+}
+
+.join-button {
+  display: inline-block;
+  margin-top: 2.3rem;
+  margin-left: 0.5rem;
+}
+
+.host-note {
+  align-self: flex-end;
+  padding-right: 2.5rem;
+}
+
+input {
+  display: block;
+}
+
+.hint {
+  max-width: 13em;
+  display: inline-block;
+  font-size: 0.7rem;
+}
