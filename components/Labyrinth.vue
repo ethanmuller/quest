@@ -83,11 +83,11 @@ function thingAtLocation(x, y) {
 }
 
 export default {
-  props: ['party'],
+  props: ['socket', 'party'],
   
   asyncData () {
     return new Promise(function (resolve) {
-      return socket.emit('join', { type: 'normie' }, function (data) {
+      return this.socket.emit('join', { type: 'normie' }, function (data) {
         return resolve({ world: data })
       })
     })
@@ -112,14 +112,14 @@ export default {
   watch: {
   },
   beforeMount () {
-    // socket.emit('join', { type: 'normie' }, function (data) {
+    // this.socket.emit('join', { type: 'normie' }, function (data) {
     //   this.world = data
     // })
 
-    socket.on('world-update', (world) => {
+    this.socket.on('world-update', (world) => {
       this.world = world
     })
-    socket.emit('send-move', [this.x, this.y])
+    this.socket.emit('send-move', [this.x, this.y])
   },
   setup() {
     const [deathSound] = useSound(scare)
@@ -162,7 +162,7 @@ export default {
         
         // draw other players
         for (let i = 0; i < this.world.length; i++) {
-          if (socket.id === this.world[i].id) {
+          if (this.socket.id === this.world[i].id) {
             continue;
           }
           
@@ -211,12 +211,12 @@ export default {
     
     clenchStart() {
       this.isClenched = true
-      socket.emit('send-clench', this.isClenched)
+      this.socket.emit('send-clench', this.isClenched)
     },
     
     clenchEnd() {
       this.isClenched = false
-      socket.emit('send-clench', this.isClenched)
+      this.socket.emit('send-clench', this.isClenched)
     },
     
     dpadPress(dir) {
@@ -236,7 +236,7 @@ export default {
       document.body.classList.add('game-over')
       const loc = { x: -999, y: -999 }
       this.moveAbsolute(loc)
-      socket.emit('send-move', [loc.x, loc.y])
+      this.socket.emit('send-move', [loc.x, loc.y])
       this.deathSound()
       // setTimeout(() => {
       //   // alert('you have been eaten by the beast.\nRIP in peace.')
@@ -273,7 +273,7 @@ export default {
       this.x = targetX
       this.y = targetY
       
-      socket.emit('send-move', [this.x, this.y])
+      this.socket.emit('send-move', [this.x, this.y])
     },
     
     moveAbsolute(location) {
@@ -288,7 +288,7 @@ export default {
       }
       this.messages.push(message)
       this.message = ''
-      socket.emit('send-message', message)
+      this.socket.emit('send-message', message)
     },
   }
 }

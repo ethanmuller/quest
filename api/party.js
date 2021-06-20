@@ -13,7 +13,11 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-  const party = partyManager.addParty(req.body.ticket)
+  const newPartyData = {
+    ticket: req.body.ticket,
+    selectedGame: req.body.selectedGame,
+  }
+  const party = partyManager.addParty(newPartyData)
   res.json(party)
 })
 

@@ -12,9 +12,18 @@
     </form>
   </div>
   
-    <p class="host-note">
-      <button class="btn btn--sm" @click="hostParty = createParty()">Create Party</button>
-    </p>
+    <div class="host-note">
+      <form @submit.prevent="createParty">
+        <label>
+          Game
+          <select v-model="selectedGame" required>
+            <option value="nothing">Nothing</option>
+            <option value="quest">Quest</option>
+          </select>
+        </label>
+        <button class="btn btn--sm">Create Party</button>
+      </form>
+    </div>
   </main>
 </template>
 
@@ -25,6 +34,7 @@ export default {
       hostParty: {},
       hostPartyTicket: '',
       partyCode: '',
+      selectedGame: '',
     }
   },
   
@@ -34,7 +44,10 @@ export default {
   
   methods: {
     async createParty() {
-      const data = { ticket: this.hostPartyTicket }
+        const data = {
+            ticket: this.hostPartyTicket,
+            selectedGame: this.selectedGame,
+        }
       
       const response = await fetch('/api/party', {
         method: 'POST',

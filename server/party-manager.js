@@ -21,9 +21,10 @@ function makeId(length) {
   return result.join('');
 }
 
-function addParty(ticket) {
+function addParty(newPartyData) {
   const party = {
-    ticket,
+    ticket: newPartyData.ticket,
+    selectedGame: newPartyData.selectedGame,
     id: makeId(4).toLowerCase(),
     memberCount: 0,
   }
