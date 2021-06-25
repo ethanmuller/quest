@@ -1,49 +1,7 @@
 <template>
   <div>
-    <component v-bind:is="gamesMap[partyRoom.selectedGame]" :socket="socket"></component>
-
-    <div v-if="$fetchState.pending">
-      Joining party <strong>{{ $route.params.party.toUpperCase() }}</strong>...
-    </div>
-    <div v-else-if="$fetchState.error">
-      The party <strong>{{ $route.params.party.toUpperCase() }}</strong> doesn't exist.
-      Are you sure you spelled it correctly?
-    </div>
-    <div v-else-if="!$fetchState.pending && !$fetchState.error && partyRoom.isEnded">
-      The party <strong>{{ this.partyRoom.id.toUpperCase() }}</strong> has ended.
-    </div>
-    <div v-else-if="!$fetchState.pending && !$fetchState.error && !partyRoom.isEnded">
-      <div v-if="isConnected">
-        <div class="party-header">Party Code: <strong>{{ this.partyRoom.id.toUpperCase() }}</strong></div>
-        <div v-if="!identitySet">
-          <IdentitySetter @doink="setAvatarUrl()" :socketId="socketId" />
-        </div>
-        <main v-if="identitySet">
-          <div class="party-chunk">
-            <p v-if="people.length === 1" style="opacity: 0.2">You are here by yourself.</p>
-            <p v-else-if="people.length === 2">There's 1 other person here.</p>
-            <p v-else-if="people.length > 2">There's {{ people.length - 1 }} other people here.</p>
-            <ul class="party-list">
-              <li v-for="member in people">
-                <button @click="editIdentity" v-if="member.id === socketId">
-                  <img v-if="member.avatarUrl" :src="member.avatarUrl" />
-                  <span class="you">YOU</span>
-                </button>
-                <img v-else="member.avatarUrl" :src="member.avatarUrl" />
-              </li>
-            </ul>
-          </div>
-
-          <div class="host-note"><button @click="endPartyButton()" class="btn btn--danger">End Party</button></div>
-
-        </main>
-      </div>
-
-      <slot></slot>
-
-      <div v-if="!isConnected">trying to connect...</div>
-    </div>
-</div>
+    <component v-bind:is="gamesMap[partyRoom.selectedGame]" :socket="socket" :isConnected="isConnected" :partyRoom="partyRoom" :people="people" ></component>
+  </div>
 </template>
 
 <script>
@@ -62,7 +20,7 @@ export default {
       count: 0,
       gamesMap: {
         quest: 'GamesQuest',
-        nothing: 'GamesNothing',
+        masks: 'GamesMasks',
       },
     }
   },

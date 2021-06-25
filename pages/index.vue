@@ -1,5 +1,5 @@
 <template>
-<main>
+<main class="main main--home">
   
   <div class="join-chunk">
     <form @submit.prevent="joinParty" class="input-and-button">
@@ -17,7 +17,7 @@
         <label>
           Game
           <select v-model="selectedGame" required>
-            <option value="nothing">Nothing</option>
+            <option value="masks">Masks</option>
             <option value="quest">Quest</option>
           </select>
         </label>

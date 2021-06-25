@@ -3,6 +3,34 @@ import partyManager from './party-manager'
 const players = []
 export let io = null;
 
+const world = {}
+
+function getMembersList(party, fn) {
+  io.fetchSockets()
+    .then((sox) => {
+      const members = []
+      sox.forEach((socket) => {
+        let member = world[socket.id]
+
+        if (member && member.party !== party) {
+          return
+        }
+
+        if (!member) {
+          member = {
+            id: socket.id,
+            location: [0, 0],
+            isClenched: false,
+          }
+        }
+
+        members.push(member)
+      })
+
+      fn(members)
+    })
+}
+
 function getPlayer(id) {
   return players.find(player => player.id === id)
 }
@@ -65,6 +93,10 @@ export default function(socketInstance) {
       socket.in(party).emit('party-end')
     })
 
+    socket.on('send-move', function () {
+      console.log('movin')
+    })
+
     socket.on('party-set-name', function (nickname) {
       const player = getPlayer(socket.id)
       player.nickname = nickname
@@ -90,6 +122,40 @@ export default function(socketInstance) {
       }
 
     })
+
+    socket.on('quest-join', function (opts, fn) {
+      console.log(`a ${opts.type} joined ${opts.party}`)
+
+      world[socket.id] = {
+        id: socket.id,
+        location: [3, 3],
+        isClenched: false,
+        type: opts.type,
+        party: opts.party,
+      }
+
+      getMembersList(opts.party, (members) => {
+        const world = members
+        fn(world)
+      })
+    })
+
+    socket.on('send-move', function(location) {
+        const member = world[socket.id]
+
+        if (member) {
+          member.location = location
+
+          getMembersList(member.party, (members) => {
+              const world = members
+              socket.to(member.party).emit('world-update', world)
+            })
+          }
+    })
+
+    socket.on('send-clench', function(isClenched) {
+    })
+
 
   })
 }

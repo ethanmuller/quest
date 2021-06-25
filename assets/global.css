@@ -108,12 +108,19 @@ input[type="text"] {
     transform: translate(5px, 0) rotate(-45deg);
 }
 
-main {
-  min-height: calc(100vh - 5rem);
+.main {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+}
+
+.main--home {
+  min-height: calc(100vh - 5rem);
+  justify-content: center;
+}
+
+.main--game {
+  justify-content: flex-start;
 }
 
 .join-chunk {
