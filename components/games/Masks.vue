@@ -34,7 +34,7 @@
 
 <script>
 export default {
-  props: ['socket', 'party', 'isConnected', 'partyRoom', 'people'],
+  props: ['socket', 'party', 'isConnected', 'partyRoom', 'people', 'endParty'],
 
   data() {
     return {
@@ -43,50 +43,7 @@ export default {
       count: 0,
     }
   },
-  
-  // computed: {
-    // avatarUrl: function() {
-      // this.$store.state.identity.avatarUrl
-    // },
-  // },
 
-  // async fetch() {
-  //   this.partyRoom = await fetch(`/api/party/${this.$route.params.party}`, {
-  //     method: 'GET',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //   }).then(async (res) => {
-  //     if(res.ok) {
-  //       return await res.json()
-  //     } else {
-  //       throw new Error(res.status)
-  //     }
-  //   })
-  // }
-    // ,
-  mounted() {
-    // this.socket.on('connect', this.handleConnect)
-    // this.socket.on('disconnect', this.handleDisconnect)
-    // this.socket.on('party-update', this.receivePartyUpdate)
-    // this.socket.on('party-doink', this.receiveDoink)
-    // this.socket.on('party-end', this.receivePartyEnd)
-    // this.socket.on('test-event', this.receiveTestEvent)
-    
-    // this.connect()
-  },
-  beforeDestroy() {
-    // this.disconnect()
-    
-    // this.socket.off('connect', this.handleConnect)
-    // this.socket.off('disconnect', this.handleDisconnect)
-    // this.socket.off('party-update', this.receivePartyUpdate)
-    // this.socket.off('party-doink', this.receiveDoink)
-    // this.socket.off('party-end', this.receivePartyEnd)
-    // this.socket.off('test-event', this.receiveTestEvent)
-  },
-  
   methods: {
     setAvatarUrl() {
       this.identitySet = true
@@ -96,45 +53,12 @@ export default {
       this.identitySet = false
     },
     endPartyButton() {
-      if (confirm(`This will kick everybody out of the party. You're sure you want to do this?`)) {
+        if (confirm(`This will kick everybody out of the party. You're sure you want to do this?`)) {
         this.socket.emit('party-end')
         this.endParty()
       }
     },
-    receiveTestEvent() {
-      alert('the test worked!')
-    },
-    
-    receivePartyEnd() {
-      alert('this party is now over because somebody ended it')
-      this.endParty()
-    },
-    endParty() {
-      this.$router.push({ path: '/' })
-    },
-    // handleConnect() {
-      // console.log('connect')
-      // this.socketId = socket.id
-      // this.isConnected = true
-
-      // socket.emit('party-join', { party: this.$route.params.party })
-    // },
-    // receivePartyUpdate(updatedParty) {
-      // console.log('received updated party')
-      // this.people = updatedParty
-    // },
-    // handleDisconnect() {
-      // console.log('disconnect')
-      // this.isConnected = false
-      // this.people = []
-    // },
-    // connect() {
-      // this.socket.connect()
-    // },
-    // disconnect() {
-      // this.socket.disconnect()
-    // },
-  }    
+  }
 }
 </script>
 
